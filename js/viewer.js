@@ -53,7 +53,7 @@ function domeMaterial(eyeSign /* -1 left, +1 right, 0 mono */) {
     uniforms: {
       map: { value: videoTex },
       eyeSign: { value: eyeSign },
-      packed: { value: packed ? 1 : 0 },
+      isPacked: { value: packed ? 1 : 0 },
       maxDisparity: { value: (MAX_DISPARITY_DEG / 180) },
     },
     vertexShader: /* glsl */ `
@@ -67,11 +67,11 @@ function domeMaterial(eyeSign /* -1 left, +1 right, 0 mono */) {
       varying vec2 vUv;
       uniform sampler2D map;
       uniform float eyeSign;
-      uniform int packed;
+      uniform int isPacked;
       uniform float maxDisparity;
       void main() {
         vec2 uv = vUv;
-        if (packed == 1) {
+        if (isPacked == 1) {
           // depth from right half; color from left half with parallax shift
           float invDepth = texture2D(map, vec2(0.5 + uv.x * 0.5, uv.y)).r;
           float shift = eyeSign * maxDisparity * invDepth;

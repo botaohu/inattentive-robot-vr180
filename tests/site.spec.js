@@ -25,7 +25,8 @@ test("viewer loads a scenario video and plays it on the dome", async ({ page }) 
   }));
   expect(meta.id).toBe("s2-task-vs-emergency");
   expect(meta.w).toBeGreaterThan(0);
-  expect(meta.h).toBe(meta.w); // 1:1 half-equirect frames
+  // 1:1 half-equirect frames, or 2:1 when color+depth are packed side by side.
+  expect([meta.w, meta.w / 2]).toContain(meta.h);
   await page.click("#start");
   await page.waitForTimeout(700);
   const playing = await page.evaluate(() => !window.__viewer.video.paused && window.__viewer.video.currentTime > 0);
