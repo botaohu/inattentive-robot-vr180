@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inattentive Robots — VR180 Scenario</title>
+<style>
+  :root { --bg: #0d0c0a; --panel: #171512; --ink: #ece7dd; --dim: #9a938a; --accent: #d5e3b5; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font-family: "Avenir Next", "Helvetica Neue", system-ui, sans-serif; overflow: hidden; }
+  #view { position: fixed; inset: 0; width: 100vw; height: 100vh; touch-action: none; }
+  header { position: fixed; top: 0; left: 0; right: 0; display: flex; align-items: center;
+    justify-content: space-between; padding: 14px 20px; z-index: 10; pointer-events: none;
+    background: linear-gradient(rgba(13,12,10,.85), transparent); }
+  header a, header button { pointer-events: auto; }
+  .wordmark { font-size: 11px; letter-spacing: .22em; color: var(--dim); text-decoration: none; }
+  .wordmark b { color: var(--ink); font-weight: 600; }
+  #meta { text-align: center; }
+  #title { font-size: 14px; letter-spacing: .06em; }
+  #conflict { font-size: 11px; color: var(--dim); letter-spacing: .12em; text-transform: uppercase; margin-top: 2px; }
+  .btn { background: var(--accent); color: #17190f; border: 0; border-radius: 999px;
+    padding: 10px 22px; font-size: 13px; letter-spacing: .04em; cursor: pointer; }
+  .btn:disabled { background: #3a382f; color: #83807a; cursor: default; }
+  #start { position: fixed; inset: 0; margin: auto; width: 200px; height: 48px; z-index: 12; }
+  #start.hidden { display: none; }
+  footer { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: center;
+    gap: 10px; padding: 16px; z-index: 10; background: linear-gradient(transparent, rgba(13,12,10,.85)); }
+  .hint { position: fixed; bottom: 64px; width: 100%; text-align: center; color: var(--dim);
+    font-size: 11px; letter-spacing: .08em; z-index: 9; pointer-events: none; }
+</style>
+<script type="importmap">
+  { "imports": { "three": "./vendor/three.module.js" } }
+</script>
+</head>
+<body>
+<canvas id="view"></canvas>
+<header>
+  <a class="wordmark" href="./index.html">◉ <b>INATTENTIVE ROBOTS</b> · VR180</a>
+  <div id="meta">
+    <div id="title"></div>
+    <div id="conflict"></div>
+  </div>
+  <span class="wordmark">ROBOT POV</span>
+</header>
+<button id="start" class="btn">▶ Play scenario</button>
+<div class="hint">Drag to look around · put on a headset and press Enter VR for immersive 180°</div>
+<footer>
+  <button id="entervr" class="btn">Enter VR</button>
+</footer>
+<script type="module" src="./js/viewer.js"></script>
+</body>
+</html>

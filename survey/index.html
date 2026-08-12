@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inattentive Robots — Survey</title>
+<style>
+  :root { --bg: #0d0c0a; --panel: #171512; --ink: #ece7dd; --dim: #9a938a; --accent: #d5e3b5; --line: #2a2721; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Avenir Next", "Helvetica Neue", system-ui, sans-serif; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 28px 24px 80px; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 32px; }
+  .wordmark { font-size: 12px; letter-spacing: .22em; color: var(--dim); text-decoration: none; }
+  .wordmark b { color: var(--ink); font-weight: 600; }
+  .kicker { color: var(--accent); font-size: 11px; letter-spacing: .18em; }
+  h1 { font-size: 34px; margin: 10px 0 8px; }
+  .sub { color: var(--dim); font-size: 14px; line-height: 1.6; }
+  #modeBadge { font-size: 11px; color: var(--dim); letter-spacing: .06em; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; margin-top: 24px; }
+  label { display: block; font-size: 11px; letter-spacing: .14em; color: var(--dim); text-transform: uppercase;
+    margin: 18px 0 6px; }
+  select, textarea { width: 100%; background: #100e0b; color: var(--ink); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px; font-size: 14px; font-family: inherit; }
+  textarea { min-height: 96px; resize: vertical; }
+  .btn { background: var(--accent); color: #17190f; border: 0; border-radius: 999px; padding: 11px 24px;
+    font-size: 13px; letter-spacing: .04em; cursor: pointer; margin-top: 18px; }
+  .btn.ghost { background: transparent; color: var(--dim); border: 1px solid var(--line); }
+  .hidden { display: none !important; }
+  #user { color: var(--accent); font-size: 13px; }
+  #status { color: var(--dim); font-size: 12px; margin-top: 10px; min-height: 16px; }
+  #mine h3 { font-size: 13px; letter-spacing: .12em; color: var(--dim); text-transform: uppercase; margin: 28px 0 10px; }
+  .resp { border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+  .resp .tag { color: var(--accent); font-size: 11px; letter-spacing: .1em; }
+  .resp p { margin: 8px 0 0; font-size: 14px; line-height: 1.5; }
+  .resp .why { color: var(--dim); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="wordmark" href="../index.html">◉ <b>INATTENTIVE ROBOTS</b> · SURVEY</a>
+    <span id="modeBadge"></span>
+  </nav>
+  <div class="kicker">AFTER YOU WATCH</div>
+  <h1>What should the robot do?</h1>
+  <p class="sub">
+    You just watched the robot face a conflict of attention. Sign in with your Google account and
+    tell us the <b>first thing</b> you want the robot to do in that moment — its immediate action,
+    before anything else.
+  </p>
+  <div class="panel" id="auth">
+    <span id="user"></span>
+    <button id="signin" class="btn">Sign in with Google</button>
+    <button id="signout" class="btn ghost hidden">Sign out</button>
+    <form id="form" class="hidden">
+      <label for="scenario">Scenario</label>
+      <select id="scenario"></select>
+      <label for="action">What should the robot do first?</label>
+      <textarea id="action" required placeholder="e.g. Put down the spatula, turn off the burner, and go to the child…"></textarea>
+      <label for="why">Why? (optional)</label>
+      <textarea id="why" placeholder="What makes this the right first move?"></textarea>
+      <button id="submit" class="btn" type="submit">Submit response</button>
+      <div id="status"></div>
+    </form>
+  </div>
+  <div id="mine"></div>
+</div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+node_modules/
+test-results/
+playwright-report/
+shots/
+.DS_Store
+videos/p1-test.png
+videos/f1-test.png
+videos/pilot-s2.mp4
+videos/e1-seedance-vr180-prompt.mp4
+videos/e5-seedance25-vr180-prompt.mp4
