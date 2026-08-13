@@ -16,8 +16,9 @@ that needs AI-generated 180° immersive video that projects correctly in a WebXR
    Validate each still in the lab; regenerate on failure (~$0.15, 30 s).
 
 3. MOTION + AUDIO (per scenario)
-   minimax/h3/image-to-video · input = validated still · motion/dialogue prompt ·
-   4K, 10 s → final clip. H3 follows the input frame's projection.
+   fal-ai/kling-video/o3/4k/image-to-video · input = validated still · motion/
+   dialogue prompt · 10 s, audio → final clip. Kling follows the input frame's
+   projection and is the face-quality winner (see below).
 
 4. VALIDATE
    Projection lab (lab.html): synthetic calibration must pass; per-clip contact
@@ -32,7 +33,8 @@ that needs AI-generated 180° immersive video that projects correctly in a WebXR
 | Text-to-image "equirectangular" still → i2v | Nano Banana Pro renders a *near*-fisheye at 1:1 — close, but verticals still bow. Not exact. |
 | **Edit a known-good half-equirect frame (template) into each new scene** | **Deterministic.** Edit models preserve input geometry strongly; every scenario inherits the validated projection, and stills are cheap to iterate until the lab passes. |
 | Seedance 2.5 image-to-video for motion | Rejected our stills (`content_policy_violation`: photoreal people in input images trip its likeness filter). |
-| **MiniMax H3 image-to-video for motion** | Accepts the stills, preserves the frame's projection, adds synchronized audio incl. spoken lines, up to 2K/4K, $0.13/s at 2K. |
+| MiniMax H3 image-to-video for motion | Accepts the stills, preserves projection, cheap 4K ($0.16/s) — but **smears small faces** into waxy doll-like artifacts while animating. A SeedVR2 restoration pass sharpens detail yet cannot repair the broken facial structure. Acceptable only when no face is closer than ~5 m. |
+| **Kling o3 4K image-to-video for motion (RECOMMENDED)** | Accepts photoreal stills, preserves the frame's projection and POV at 2880×2880, natural human motion, and dramatically better face integrity (Kuaishou's 3D face model). $0.42/s → ~$4.2 per 10 s clip. Verified side-by-side on identical still+prompt. |
 
 ## Prompt template
 
@@ -123,7 +125,8 @@ architecture tells you what the model actually produced.
 | --- | --- | --- |
 | Template hunt | Seedance 2.5 t2v 480p/4s | ~$0.9 per attempt |
 | Scene still | Nano Banana Pro edit 2K | $0.15 per image |
-| Final clip | MiniMax H3 i2v 4K 10s | ~$1.60 per clip |
+| Final clip | Kling o3 4K i2v 10s + audio | ~$4.20 per clip |
+| (budget alternative) | MiniMax H3 i2v 4K 10s | ~$1.60 — only for face-free scenes |
 | (upscale option) | fal-ai/seedvr/upscale/video | ~$0.001/MP |
 
 ## Known limitations / next steps
