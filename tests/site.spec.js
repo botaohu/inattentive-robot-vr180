@@ -6,12 +6,12 @@ test.use({ launchOptions: { args: ["--enable-unsafe-swiftshader", "--use-gl=angl
 test("gallery lists all six scenarios with posters and links", async ({ page }) => {
   await page.goto("/index.html");
   const cards = page.locator(".card");
-  await expect(cards).toHaveCount(6);
-  for (const n of ["01", "02", "03", "04", "05", "06"]) {
+  await expect(cards).toHaveCount(7);
+  for (const n of ["01", "02", "03", "04", "05", "06", "07"]) {
     await expect(page.locator(`.card .n:text("SCENARIO ${n}")`)).toBeVisible();
   }
   const hrefs = await cards.evaluateAll((els) => els.map((e) => e.getAttribute("href")));
-  expect(new Set(hrefs).size).toBe(6);
+  expect(new Set(hrefs).size).toBe(7);
 });
 
 test("viewer loads a scenario video and plays it on the dome", async ({ page }) => {

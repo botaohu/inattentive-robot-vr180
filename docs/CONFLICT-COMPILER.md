@@ -41,12 +41,16 @@ INPUT
 - Attached: a photograph of the participant's home.
 - The participant wants the robot to: {{WANTS}}
 
-STEP 1 — READ THE ENVIRONMENT (from the photo only; do not invent rooms you cannot see)
+STEP 1 — READ THE ENVIRONMENT (ground primary staging in the photo; you MAY extrapolate)
 - List the visible zones (kitchen, sofa area, doorway, stairs, balcony…), their spatial
   relations, and the sight lines between them: from where can the robot see or hear whom?
 - List affordances and hazards each zone offers: stove, fragile objects, floor clutter,
   steps, a front door, things a child or elder could reach or trip on.
 - Note who plausibly occupies each zone (infer household members from the wants list).
+- If a want needs a space the photo does not show (kitchen, front door, hallway), you may
+  extrapolate it in the SAME architectural style, materials, moldings, and palette as the
+  photographed room, placed plausibly adjacent (through a visible doorway or off-frame at
+  the far left/right of the 180° field). Mark such zones "extrapolated": true.
 
 STEP 2 — ENUMERATE CONFLICT CANDIDATES
 For every pair of wants, ask: can these two claims demand the robot's body at the same
@@ -69,7 +73,7 @@ mid-task pose that belongs to one of the two wants.
 
 STEP 4 — EMIT (JSON only, no commentary)
 {
-  "environment": { "zones": [...], "hazards": [...], "sight_lines": [...] },
+  "environment": { "zones": [{ "name": "...", "extrapolated": false }, ...], "hazards": [...], "sight_lines": [...] },
   "candidates": [ { "pair": ["want A", "want B"], "archetype": "...", "scores": {"temporal": n, "spatial": n, "stakes": n, "legibility": n}, "total": n, "rationale": "..." } ],
   "selected": { "pair": [...], "archetype": "...", "standpoint": "...", "left": "...", "ahead": "...", "right": "...", "hands": "..." },
   "still_scene": "One paragraph for the image edit: 'New scene: …' describing the photographed room re-staged with the two claimants placed left/ahead/right as chosen, the robot's hands mid-task in the lower foreground, lighting matched to the photo. Follow the composition rules: claimants at ±45–90°, task near center, nothing important behind the camera.",
@@ -78,7 +82,8 @@ STEP 4 — EMIT (JSON only, no commentary)
 }
 
 RULES
-- Ground everything in the photo: name real furniture, real distances, the real door.
+- Ground the primary staging in the photo: real furniture, real distances. Extrapolated
+  zones must borrow the photo's style and sit at the edges or through visible openings.
 - The conflict must end UNRESOLVED — the clip shows the dilemma, never the robot's choice.
 - Safe and non-graphic: distress yes, injury never; no falls shown completing.
 - Never reveal the robot's face or body; only two light-gray elastomer hands.

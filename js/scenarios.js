@@ -69,4 +69,15 @@ export const SCENARIOS = [
     poster: "posters/s6-protection-vs-autonomy.jpg",
     layout: "mono+depth",
   },
+  {
+    id: "home2",
+    n: "07",
+    title: "The Candles and the Doorbell",
+    conflict: "Compiled from your home",
+    question: "The toddler reaches toward the coffee table as visitors wait at the door — who is served first?",
+    video: "videos/home2.mp4",
+    depth: "videos/home2.depth.mp4",
+    poster: "posters/home2.jpg",
+    layout: "mono+depth",
+  },
 ];
