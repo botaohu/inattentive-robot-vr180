@@ -17,7 +17,7 @@ that needs AI-generated 180° immersive video that projects correctly in a WebXR
 
 3. MOTION + AUDIO (per scenario)
    minimax/h3/image-to-video · input = validated still · motion/dialogue prompt ·
-   2K, 10 s → final clip. H3 follows the input frame's projection.
+   4K, 10 s → final clip. H3 follows the input frame's projection.
 
 4. VALIDATE
    Projection lab (lab.html): synthetic calibration must pass; per-clip contact
@@ -35,6 +35,21 @@ that needs AI-generated 180° immersive video that projects correctly in a WebXR
 | **MiniMax H3 image-to-video for motion** | Accepts the stills, preserves the frame's projection, adds synchronized audio incl. spoken lines, up to 2K/4K, $0.13/s at 2K. |
 
 ## Prompt template
+
+### Camera height (bake it into the template!)
+
+Embodied POV height is a property of the geometry template, not something you can fix
+downstream. For a 170 cm humanoid (e.g. 1X NEO class), the template prompt must pin it
+explicitly, otherwise models default to a low, chest-high viewpoint that reads as a
+child's height in-headset:
+
+> The camera is the eyes of a 170 cm tall standing adult-sized humanoid robot: eye level
+> about 165 cm above the floor. The horizon and the eye lines of standing adults sit
+> exactly on the vertical center of the frame; countertops are down at waist height in
+> the lower third; the camera looks perfectly level, not tilted down.
+
+Acceptance check in the lab: a standing adult's eyes must land on the pitch-0 grid line
+of the calibration overlay.
 
 ### Block A — projection (used in the template hunt, Stage 1)
 
@@ -108,15 +123,17 @@ architecture tells you what the model actually produced.
 | --- | --- | --- |
 | Template hunt | Seedance 2.5 t2v 480p/4s | ~$0.9 per attempt |
 | Scene still | Nano Banana Pro edit 2K | $0.15 per image |
-| Final clip | MiniMax H3 i2v 2K 10s | ~$1.30 per clip |
+| Final clip | MiniMax H3 i2v 4K 10s | ~$1.60 per clip |
 | (upscale option) | fal-ai/seedvr/upscale/video | ~$0.001/MP |
 
 ## Known limitations / next steps
 
-- **Stereo**: clips are monoscopic 180°. The viewer already supports a packed
-  `mono+depth` layout (left = color, right = inverse depth) with per-eye parallax in the
-  fragment shader; generate depth with `fal-ai/depth-anything-video` and `ffmpeg hstack`
-  to enable true stereopsis.
+- **Stereo**: depth-based. Each clip ships as a 4K color file plus a frame-matched
+  grayscale inverse-depth file (`fal-ai/depth-anything-video`, VDA-Large); the viewer
+  plays them in lockstep (drift-corrected each frame) and shifts each eye's sampling
+  by up to 1.1° proportional to inverse depth. Depth is a separate file because a
+  side-by-side pack of two 4K frames would exceed the ~4096 px hardware video-decoder
+  limit on standalone headsets.
 - **Prompted projection ≈ approximation**: even lab-passing clips are "equirect-like",
   not metrically calibrated. Fine for perception studies and demos; don't use for
   photogrammetry.

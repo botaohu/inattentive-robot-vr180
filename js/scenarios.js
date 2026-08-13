@@ -1,6 +1,7 @@
 // The six attention-conflict scenarios (see amber.botao.hu/project/inattentive-robot).
-// layout: "mono" (single hequirect frame) or "mono+depth" (left half color,
-// right half depth — enables depth-based stereo parallax in the viewer).
+// layout "mono+depth": `video` is the 4K half-equirect color clip and `depth`
+// a frame-matched grayscale inverse-depth clip, played in lockstep for
+// per-eye parallax stereo in the viewer.
 export const SCENARIOS = [
   {
     id: "s1-convenience-vs-urgency",
@@ -8,7 +9,8 @@ export const SCENARIOS = [
     title: "Kitchen or Care?",
     conflict: "Convenience vs. urgency",
     question: "Whose deadline takes precedence — the pancakes or the homework?",
-    video: "videos/s1-convenience-vs-urgency.vr180d.mp4",
+    video: "videos/s1-convenience-vs-urgency.mp4",
+    depth: "videos/s1-convenience-vs-urgency.depth.mp4",
     poster: "posters/s1-convenience-vs-urgency.jpg",
     layout: "mono+depth",
   },
@@ -18,7 +20,8 @@ export const SCENARIOS = [
     title: "Repair or Rescue?",
     conflict: "Ongoing task vs. emergency",
     question: "When should vulnerability interrupt routine work?",
-    video: "videos/s2-task-vs-emergency.vr180d.mp4",
+    video: "videos/s2-task-vs-emergency.mp4",
+    depth: "videos/s2-task-vs-emergency.depth.mp4",
     poster: "posters/s2-task-vs-emergency.jpg",
     layout: "mono+depth",
   },
@@ -28,7 +31,8 @@ export const SCENARIOS = [
     title: "Command or Comfort?",
     conflict: "Authority vs. distress",
     question: "Does emotional need override formal ownership?",
-    video: "videos/s3-authority-vs-distress.vr180d.mp4",
+    video: "videos/s3-authority-vs-distress.mp4",
+    depth: "videos/s3-authority-vs-distress.depth.mp4",
     poster: "posters/s3-authority-vs-distress.jpg",
     layout: "mono+depth",
   },
@@ -38,7 +42,8 @@ export const SCENARIOS = [
     title: "Threshold Divide",
     conflict: "Private vs. public duty",
     question: "What claims can strangers make on private resources?",
-    video: "videos/s4-private-vs-public.vr180d.mp4",
+    video: "videos/s4-private-vs-public.mp4",
+    depth: "videos/s4-private-vs-public.depth.mp4",
     poster: "posters/s4-private-vs-public.jpg",
     layout: "mono+depth",
   },
@@ -48,7 +53,8 @@ export const SCENARIOS = [
     title: "One Body, Many Roles",
     conflict: "Multiple personas",
     question: "Which social role wins when the robot cannot fork itself?",
-    video: "videos/s5-multiple-personas.vr180d.mp4",
+    video: "videos/s5-multiple-personas.mp4",
+    depth: "videos/s5-multiple-personas.depth.mp4",
     poster: "posters/s5-multiple-personas.jpg",
     layout: "mono+depth",
   },
@@ -58,7 +64,8 @@ export const SCENARIOS = [
     title: "Care or Control?",
     conflict: "Protection vs. autonomy",
     question: "When does safeguarding become paternalism?",
-    video: "videos/s6-protection-vs-autonomy.vr180d.mp4",
+    video: "videos/s6-protection-vs-autonomy.mp4",
+    depth: "videos/s6-protection-vs-autonomy.depth.mp4",
     poster: "posters/s6-protection-vs-autonomy.jpg",
     layout: "mono+depth",
   },

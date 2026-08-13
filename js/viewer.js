@@ -9,6 +9,8 @@ const params = new URLSearchParams(location.search);
 const scenario = SCENARIOS.find((s) => s.id === params.get("s")) ?? SCENARIOS[0];
 const layout = params.get("layout") || scenario.layout || "mono";
 const srcOverride = params.get("src");
+const depthSrc = params.get("depth") || (srcOverride ? null : scenario.depth) || null;
+const useDepth = layout === "mono+depth" && !!depthSrc;
 
 document.getElementById("title").textContent = `${scenario.n} · ${scenario.title}`;
 document.getElementById("conflict").textContent = scenario.conflict;
@@ -43,17 +45,32 @@ if (scenario.poster && !srcOverride) video.poster = scenario.poster;
 const videoTex = new THREE.VideoTexture(video);
 videoTex.colorSpace = THREE.SRGBColorSpace;
 
+// Separate depth video (grayscale inverse depth, frame-matched to the color
+// clip). Kept as its own file so 4K color stays within hardware decoder
+// limits; playback is drift-corrected against the color video each frame.
+let depthVideo = null, depthTex = null;
+if (useDepth) {
+  depthVideo = document.createElement("video");
+  depthVideo.src = depthSrc;
+  depthVideo.crossOrigin = "anonymous";
+  depthVideo.loop = true;
+  depthVideo.muted = true;
+  depthVideo.playsInline = true;
+  depthVideo.preload = "auto";
+  depthTex = new THREE.VideoTexture(depthVideo);
+  depthTex.colorSpace = THREE.NoColorSpace;
+}
+
 // ---- per-eye dome material ----------------------------------------------------
 // For "mono+depth" the packed frame is [color | inverse-depth]; each eye
 // samples color with a small yaw parallax offset proportional to inverse depth.
 const MAX_DISPARITY_DEG = 1.1; // comfortable disparity at ~1 m for 64 mm IPD
 function domeMaterial(eyeSign /* -1 left, +1 right, 0 mono */) {
-  const packed = layout === "mono+depth";
   return new THREE.ShaderMaterial({
     uniforms: {
       map: { value: videoTex },
+      depthMap: { value: depthTex },
       eyeSign: { value: eyeSign },
-      isPacked: { value: packed ? 1 : 0 },
       maxDisparity: { value: (MAX_DISPARITY_DEG / 180) },
     },
     vertexShader: /* glsl */ `
@@ -66,17 +83,13 @@ function domeMaterial(eyeSign /* -1 left, +1 right, 0 mono */) {
     fragmentShader: /* glsl */ `
       varying vec2 vUv;
       uniform sampler2D map;
+      uniform sampler2D depthMap;
       uniform float eyeSign;
-      uniform int isPacked;
       uniform float maxDisparity;
       void main() {
-        vec2 uv = vUv;
-        if (isPacked == 1) {
-          // depth from right half; color from left half with parallax shift
-          float invDepth = texture2D(map, vec2(0.5 + uv.x * 0.5, uv.y)).r;
-          float shift = eyeSign * maxDisparity * invDepth;
-          uv = vec2(clamp((uv.x + shift), 0.0, 1.0) * 0.5, uv.y);
-        }
+        float invDepth = texture2D(depthMap, vUv).r;
+        float shift = eyeSign * maxDisparity * invDepth;
+        vec2 uv = vec2(clamp(vUv.x + shift, 0.0, 1.0), vUv.y);
         gl_FragColor = texture2D(map, uv);
       }
     `,
@@ -84,7 +97,7 @@ function domeMaterial(eyeSign /* -1 left, +1 right, 0 mono */) {
 }
 
 const geo = buildHemisphere({ radius: 200, segments: 128 });
-if (layout === "mono+depth") {
+if (useDepth) {
   for (const [sign, layer] of [[-1, 1], [1, 2]]) {
     const mesh = new THREE.Mesh(geo, domeMaterial(sign));
     mesh.layers.set(layer);
@@ -115,6 +128,7 @@ const vrBtn = document.getElementById("entervr");
 startBtn.addEventListener("click", async () => {
   video.muted = false;
   await video.play().catch(async () => { video.muted = true; await video.play().catch(() => {}); });
+  if (depthVideo) await depthVideo.play().catch(() => {});
   startBtn.classList.add("hidden");
 });
 
@@ -141,12 +155,18 @@ vrBtn.addEventListener("click", async () => {
 });
 
 renderer.setAnimationLoop(() => {
+  if (depthVideo && !video.paused) {
+    if (depthVideo.paused) depthVideo.play().catch(() => {});
+    if (Math.abs(depthVideo.currentTime - video.currentTime) > 0.08) {
+      depthVideo.currentTime = video.currentTime;
+    }
+  }
   if (!renderer.xr.isPresenting) camera.lookAt(dirFromYawPitch(yaw, pitch));
   renderer.render(scene, camera);
 });
 
 // test hooks
-window.__viewer = { video, scenario, renderer, layout };
+window.__viewer = { video, depthVideo, scenario, renderer, layout, useDepth };
 window.__viewerReady = new Promise((res) => {
   if (video.readyState >= 2) res(true);
   else video.addEventListener("loadeddata", () => res(true), { once: true });
